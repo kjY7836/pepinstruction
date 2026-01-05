@@ -20,6 +20,11 @@ The repository is organized as follows:
 
 - **zeroshot/**
   Contains specific datasets and codes for **Zero-Shot evaluation** on the properties covered in the Property Prediction task.
-
+  
+##usage
 ### Training
 The `finetune.py` code located in the `code` directory is used for fine-tuning the model on peptide datasets.
+
+### Models
+
+The fine-tuned model weights are available on Hugging Face: [Pep-instruction](https://huggingface.co/Codelife176/Pep-instruction)
