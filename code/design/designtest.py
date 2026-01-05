@@ -136,20 +136,17 @@ def clean_sequence(text):
     Returns: (raw_extracted, filtered_cleaned)
     """
     text = text.strip()
-    # Remove common prompt leakage if present
+
     if "### Response:" in text:
         text = text.split("### Response:")[-1]
 
-    # Extract valid AA chars
     match = re.search(r"[ACDEFGHIKLMNPQRSTVWY]+", text.upper())
     raw_seq = match.group(0) if match else ""
-    
-    # Filter
+
     filtered_seq = raw_seq
     if len(filtered_seq) > 100:
         filtered_seq = filtered_seq[:100]
-    
-    # Remove repeated pairs/chars
+ 
     filtered_seq = re.sub(r"(..)\1{2,}", r"\1\1", filtered_seq)
     filtered_seq = re.sub(r"(.)\1{4,}", r"\1\1", filtered_seq)
     
@@ -159,17 +156,14 @@ def calculate_batch_metrics(instructions, inputs, expected_outputs, generated_te
     results = []
     for i, gen_text in enumerate(generated_texts):
         expected = expected_outputs[i].strip()
-        
-        # 1. Extract and clean
+ 
         raw_seq, filtered_seq = clean_sequence(gen_text)
-        
-        # 2. Calculate metrics
+ 
         sim_simple_raw = seq_similarity_simple(expected, raw_seq)
         sim_simple_filt = seq_similarity_simple(expected, filtered_seq)
         sim_blosum_raw = seq_similarity_blosum(expected, raw_seq)
         sim_blosum_filt = seq_similarity_blosum(expected, filtered_seq)
-        
-        # 3. Record results
+
         results.append({
             "instruction": instructions[i],
             "input": inputs[i],
@@ -189,8 +183,7 @@ def calculate_batch_metrics(instructions, inputs, expected_outputs, generated_te
 def save_model_results(model_name, records, total_time):
     filename_json = f"{model_name}_design_details.json"
     filename_txt = f"{model_name}_design_summary.txt"
-    
-    # Calculate Averages
+
     keys = ["simple_raw", "simple_filtered", "blosum_raw", "blosum_filtered"]
     totals = {k: [] for k in keys}
     for r in records:
@@ -216,7 +209,6 @@ def save_model_results(model_name, records, total_time):
     print(f"  Simple (Filt): {avgs['simple_filtered']:.4f}")
     print(f"  BLOSUM (Filt): {avgs['blosum_filtered']:.4f}")
 
-# ---------------- MODEL RUNNERS ----------------
 
 def run_llama_base(data):
     model_name = "Llama-2-7b-Base"
@@ -224,7 +216,7 @@ def run_llama_base(data):
     aggressive_cleanup()
     
     tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL_PATH)
-    #Use eos_token for padding
+
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"
     
@@ -259,8 +251,7 @@ def run_llama_base(data):
             input_len = len(inputs["input_ids"][j])
             decoded = tokenizer.decode(out[input_len:], skip_special_tokens=True)
             gen_texts.append(decoded)
-            
-            #  first 2 samples
+     
             global_idx = i + j
             if global_idx < 2:
                 print(f"[DEBUG] {model_name} #{global_idx+1}: {decoded[:100]}...")
@@ -346,7 +337,6 @@ def run_llama_lora(data):
     aggressive_cleanup()
     
     tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL_PATH)
-    # Stability Fix
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"
     
@@ -449,7 +439,6 @@ def run_gpt(data):
             
     save_model_results(model_name, all_records, time.time() - start_time)
 
-# ---------------- MAIN EXECUTION ----------------
 
 def main():
     print(f"Using Logical Device: {DEVICE}")
@@ -461,8 +450,7 @@ def main():
         
     with open(TEST_DATA_PATH, "r", encoding="utf-8") as f:
         full_data = json.load(f)
-    
-    # Filter for design tasks
+
     target_data = [d for d in full_data if d.get("task", "design") == "design"]
     print(f"Total Design Samples: {len(target_data)}")
     

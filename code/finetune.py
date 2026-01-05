@@ -17,7 +17,7 @@ output_path = "./merge-model-pro-new-0"
 
 
 is_bf16_supported = torch.cuda.is_bf16_supported()
-print(f"是否支持 BF16: {is_bf16_supported}")
+print(f"BF16: {is_bf16_supported}")
 
 print("正在加载模型...")
 model = transformers.LlamaForCausalLM.from_pretrained(
@@ -147,7 +147,6 @@ trainer = Trainer(
 print("开始训练..")
 trainer.train()
 
-# ---------------- 7. 保存 ----------------
 print(f"正在保存模型至 {output_path}")
 model.save_pretrained(output_path)
 tokenizer.save_pretrained(output_path)
