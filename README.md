@@ -22,7 +22,9 @@ The repository is organized as follows:
   Contains specific datasets and codes for **Zero-Shot evaluation** on the properties covered in the Property Prediction task.
   
 ##usage
+
 To set up the environment, please install the necessary dependencies using the provided `requirements.txt` file. We recommend using a Python 3+ environment to ensure compatibility.
+
 ### Training
 The `finetune.py` code located in the `code` directory is used for fine-tuning the model on peptide datasets.
 
