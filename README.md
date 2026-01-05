@@ -21,7 +21,7 @@ The repository is organized as follows:
 - **zeroshot/**
   Contains specific datasets and codes for **Zero-Shot evaluation** on the properties covered in the Property Prediction task.
   
-##usage
+## usage
 
 To set up the environment, please install the necessary dependencies using the provided `requirements.txt` file. We recommend using a Python 3+ environment to ensure compatibility.
 
